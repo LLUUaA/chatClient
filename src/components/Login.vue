@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { setSession } from '../utils/session'
 export default {
   name: "login",
   data() {
@@ -37,7 +38,9 @@ export default {
           });
 
           this.userInfo = res;
-          this.$router.push('/index')
+          this.session = sessionKey;
+          setSession(res.sessionKey);
+          this.$router.push('login')
         },err => {
           console.log("err", err);
           this.$message({

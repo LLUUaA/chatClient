@@ -57,8 +57,9 @@
     </el-dialog>
   </el-container>
 </template>
-
 <script>
+import io from "socket.io-client";
+
 export default {
   name: "HelloWorld",
   data() {
@@ -71,16 +72,50 @@ export default {
   },
 
   mounted() {
-    if(this.session) {
-
-    }else {
-      
-    }
+    this.connectSocket();
+    this.getOnlineList()
   },
 
   methods: {
     handleClose(event) {
       this.dialogVisible = false;
+    },
+
+    getOnlineList () {
+      this.axios({
+        url: "message/onLine",
+        method: "get"
+      }).then(res=>{
+        
+      })
+    },
+
+    connectSocket() {
+      const socket = io("ws://localhost:3001", {
+        path: "/test",
+        transports: ["websocket"],
+        query: {
+          token: this.session
+        }
+      });
+      console.log("socket", socket);
+      socket.on("connect", function() {
+        socket.emit("message", 11);
+        socket.on(socket.id, function(data) {
+          console.log("on msg single", data);
+        }); //简单实现单-单通信
+        socket.on("message", function(data) {
+          console.log("on message", data);
+        });
+      });
+
+      socket.on("error", err => {
+        console.log(err);
+        this.$message({
+          message: err || "socket error",
+          type: "warning"
+        });
+      });
     }
   }
 };

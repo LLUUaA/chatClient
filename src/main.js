@@ -9,11 +9,21 @@ import 'element-ui/lib/theme-chalk/index.css'
 // import axios
 import axios from './utils/request'
 
+import { getSession } from './utils/session';
+
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 Vue.prototype.userInfo = null
+Vue.prototype.session = null
 Vue.prototype.axios = axios
+
+router.beforeEach((to, from, next) => {
+  Vue.prototype.session = getSession();
+  next();
+})
+
+
 
 /* eslint-disable no-new */
 new Vue({
