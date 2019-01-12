@@ -18,7 +18,7 @@ export default function (opt = {}) {
     }).then(res => {
       resolve(res.data);
     }).catch(err => {
-      if(err.response.status === 401) {
+      if(err.response && err.response.status === 401) {
         this.$router.push('/login')
       }
       reject(err.response)
