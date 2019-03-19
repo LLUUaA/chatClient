@@ -4,8 +4,9 @@
       <!-- <img src="../assets/logo.png"> -->
       <p>0 . 0</p>
       <el-input v-model="form.account" prefix-icon="el-icon-mobile-phone" placeholder="账号"></el-input>
-      <el-input v-model="form.password" prefix-icon="el-icon-view" placeholder="密码" type="password"></el-input>
+      <el-input v-model="form.password" prefix-icon="el-icon-view" placeholder="密码" type="password" @keyup.enter.native="login"></el-input>
       <el-button type="primary" :loading="showLoading" @click="login">登陆</el-button>
+      <p>还没有账号？<router-link to="/register">去注册</router-link></p>
     </el-main>
   </el-container>
 </template>
@@ -36,11 +37,10 @@ export default {
             message: "登陆成功",
             type: "success"
           });
-
-          this.userInfo = res;
-          this.session = sessionKey;
           setSession(res.sessionKey);
-          this.$router.push('login')
+          this.$globalData.userInfo = res;
+          this.$globalData.session = res.sessionKey;
+          this.$router.push('/index')
         },err => {
           console.log("err", err);
           this.$message({

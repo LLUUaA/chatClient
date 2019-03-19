@@ -4,15 +4,15 @@ import { getSession,clearSession } from './session';
 const baseUrl = 'http://localhost:3000/';
 export default function (opt = {}) {
   return new Promise((resolve, reject) => {
-    const session = getSession();
-    opt.url = baseUrl + opt.url || '';
+    // opt.url = baseUrl + opt.url || '';
+    axios.defaults.headers.common['Authorization'] = `SessionKey ${getSession()}` ;
     axios({
       method: 'get',
+      baseURL:baseUrl,
       timeout: 6000,
       headers: {
         'access-control-allow': '*',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': session ? `SessionKey ${session}` : ''
+        'Access-Control-Allow-Origin': '*'
       },
       ...opt
     }).then(res => {
@@ -25,3 +25,4 @@ export default function (opt = {}) {
     })
   })
 }
+
