@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Login from '@/components/Login'
-import Register from '@/components/Register'
-const Index = ()=> import('@/components/Index');
-const SingleRouter = ()=> import('@/components/Single');
-const RoomRouter = ()=> import('@/components/Room');
-const NotFound = () =>import('@/components/NotFound');
-const searchRouter = ()=>import('@/components/search')
+import Login from '@/views/Login'
+import Register from '@/views/Register'
+const Index = () => import('@/views/Index');
+const SingleRoute = () => import('@/views/Single');
+const RoomRoute = () => import('@/views/Room');
+const NotFound = () =>import('@/views/NotFound');
+const SearchRoute = () =>import('@/views/search')
+const SettingRoute = () =>import('@/views/setting')
 
 import Guard from './guard'
 Vue.use(Router)
@@ -25,24 +26,24 @@ const router = new Router({
       beforeEnter: Guard,
       children:[
         {
-          path:'',
+          path:'single',
           name:'single',
-          component: SingleRouter
+          component: SingleRoute
         },
         {
-          path:'/index/single',
-          name:'single2',
-          component: SingleRouter
-        },
-        {
-          path:'/index/room',
+          path:'room',
           name:'room',
-          component: RoomRouter
+          component: RoomRoute
         },
         {
-          path:'/index/search',
+          path:'search',
           name:'search',
-          component: searchRouter
+          component: SearchRoute
+        },
+        {
+          path:'setting',
+          name:'setting',
+          component: SettingRoute
         }
       ]
     },

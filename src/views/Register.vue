@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-main>
+    <el-main class="main-wrap">
       <!-- <img src="../assets/logo.png"> -->
       <el-form :rules="rules" :model="form" ref="ruleForm">
       <p>账号注册</p>
@@ -22,6 +22,7 @@
 
       <el-button type="primary" :loading="showLoading" @click="register">注册</el-button>
       </el-form>
+      <p><router-link to="/login" class="back-login-btn">返回登陆</router-link></p>
     </el-main>
   </el-container>
 </template>
@@ -93,7 +94,16 @@ export default {
 <style scoped>
 .el-container {
   max-width: 450px;
-  margin: 200px auto;
+  margin: 0 auto;
+  padding: 200px 0;
+}
+
+.main-wrap p{
+  text-align-last: center;
+}
+
+.main-wrap a{
+  color: #eee;
 }
 
 .el-button {
@@ -102,5 +112,9 @@ export default {
 
 .el-button {
   width: 100%;
+}
+.back-login-btn {
+  font-size: 13px;
+  line-height: 40px;
 }
 </style>

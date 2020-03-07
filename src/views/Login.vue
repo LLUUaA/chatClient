@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-main>
+    <el-main class="main-wrap">
       <!-- <img src="../assets/logo.png"> -->
       <p>0 . 0</p>
       <el-input v-model="form.account" prefix-icon="el-icon-mobile-phone" placeholder="账号"></el-input>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { setSession } from '../utils/session'
+import { setSession } from '../service/session'
 export default {
   name: "login",
   data() {
@@ -40,7 +40,7 @@ export default {
           setSession(res.sessionKey);
           this.$globalData.userInfo = res;
           this.$globalData.session = res.sessionKey;
-          this.$router.push('/index')
+          this.$router.push('/index/single')
         },err => {
           console.log("err", err);
           this.$message({
@@ -59,7 +59,16 @@ export default {
 <style scoped>
 .el-container {
   max-width: 450px;
-  margin: 200px auto;
+  margin: 0 auto;
+  padding: 200px 0;
+}
+
+.main-wrap p{
+  text-align-last: center;
+}
+
+.main-wrap a{
+  color: #eee;
 }
 
 .el-input,

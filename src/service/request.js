@@ -1,14 +1,13 @@
 const axios = require('axios');
-// import config from 'config'
+import { requestUrl } from '../config';
 import { getSession,clearSession } from './session';
-const baseUrl = 'http://localhost:3000/';
+
 export default function (opt = {}) {
   return new Promise((resolve, reject) => {
-    // opt.url = baseUrl + opt.url || '';
     axios.defaults.headers.common['Authorization'] = `SessionKey ${getSession()}` ;
     axios({
       method: 'get',
-      baseURL:baseUrl,
+      baseURL: requestUrl,
       timeout: 6000,
       headers: {
         'access-control-allow': '*',

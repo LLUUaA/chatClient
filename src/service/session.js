@@ -3,11 +3,11 @@ function getTimeStamp() {
 }
 
 export function getSession() {
-  if (localStorage) {
-    const data = localStorage.getItem('session');
+  if (sessionStorage) {
+    const data = sessionStorage.getItem('session');
     if (data) {
       let [session, expriseTime] = data.split('-');
-      if (getTimeStamp > parseInt(expriseTime)) {
+      if (getTimeStamp() > parseInt(expriseTime)) {
         return false;
       } else {
         return session;
@@ -20,9 +20,13 @@ export function getSession() {
 
 export function setSession(session, expriseTime) {
   if (!expriseTime) {
-    expriseTime = getTimeStamp + 1800 //30分钟
+    expriseTime = getTimeStamp() + 1800;
   }
-  if (localStorage) {
-    localStorage.setItem('session', `${session}-${expriseTime}`)
+  if (sessionStorage) {
+    sessionStorage.setItem('session', `${session}-${expriseTime}`);
   }
+}
+
+export function clearSession() {
+  sessionStorage.removeItem("session");
 }

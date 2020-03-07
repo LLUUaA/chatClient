@@ -1,8 +1,8 @@
 const globalData = {
-    userInfo: null,
-    session: null
+  userInfo: null, // userInfo
+  session: null, // session
 }
 
 export default {
-    ...globalData
+  ...globalData
 }
