@@ -18,7 +18,7 @@
       </div>
     </el-dialog>
     <div class="online-left">
-      <friendsComponent @show="showChat" :datas="roomList"> </friendsComponent>
+      <friendsComponent :noDataText="noDataText" @show="showChat" :datas="roomList"> </friendsComponent>
       <chatComponent ref="chatRef" :chatHistory="chatList" :chatInfo="showItem" :showAvatar="true" @send="sendMessage"></chatComponent>
     </div>
   </div>
@@ -44,6 +44,7 @@ export default {
         roomNo: null,
         description: null
       },
+      noDataText: '还没有聊天室哦，添加聊天室进行聊天吧',
       dialogVisible: null,
       roomList: null,
       showItem: null,
