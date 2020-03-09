@@ -1,6 +1,6 @@
 <template>
   <div class="input-wrap flex">
-    <el-input v-model="inputVal" clearable @keyup.enter.native="send" placeholder="请输入内容">
+    <el-input v-model="inputVal" @input="handleInput" clearable @keyup.enter.native="send" placeholder="请输入内容">
     </el-input>
     <div class="handle-warp flex">
       <div class="icon">
@@ -79,6 +79,11 @@ export default {
     send() {
       this.$emit("send", encodeURIComponent(this.inputVal || ""));
     },
+
+    handleInput(val) {
+      this.$emit("input", val);
+    },
+    
     chooseEmoji(emoji) {
       this.inputVal = (this.inputVal || "") + emoji;
     },

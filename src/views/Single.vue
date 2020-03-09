@@ -1,15 +1,33 @@
 <template>
   <div class="online-left">
     <friendsComponent @show="showChat" :datas="onlineList"> </friendsComponent>
-    <chatComponent ref="chatRef" :chatHistory="chatList" :chatInfo="showItem" @send="sendMessage"></chatComponent>
+    <chatComponent ref="chatRef" @input="handleInput" :chatHistory="chatList" :chatInfo="showItem" @send="sendMessage"></chatComponent>
   </div>
 </template>
 <script>
 import friendsComponent from "@/components/friends";
 import chatComponent from "@/components/chat";
 
-import { EVENT_HAS_READ_MSG, ASIDE_SINGLE_NUM, SINGLE } from '@/service/constant';
+import {
+  EVENT_HAS_READ_MSG,
+  EVENT_NEW_SINGLE_MSG,
+  EVENT_TYPING,
+  ASIDE_SINGLE_NUM,
+  SINGLE
+} from "@/service/constant";
 
+const msgListener = [];
+const SEND_TYPING_MAX_TIME = 30;
+let lastSendTime = null; // 进入页面时间
+let hasSendTyping = null; //已经发送过typing消息（在来新消息之后更新typing状态）
+let timer = null;
+function getTimestamp(time) {
+  if (time) {
+    return Math.ceil(new Date(time).getTime() / 1000);
+  } else {
+    return Math.ceil(new Date().getTime() / 1000);
+  }
+}
 export default {
   name: "single",
   components: {
@@ -21,8 +39,11 @@ export default {
       currentIndex: null,
       onlineList: null,
       showItem: null,
-      chatList: null,
+      chatList: null
     };
+  },
+  destroyed() {
+    this.destroyedListener(msgListener);
   },
 
   mounted() {
@@ -32,14 +53,101 @@ export default {
   methods: {
     // 聊天
     async showChat(index) {
-      const currentItem = this.onlineList[index];
-      if (!currentItem) {
+      try {
+        const currentItem = this.onlineList[index];
+        if (!currentItem) {
+          return;
+        }
+        this.showItem = currentItem;
+        this.chatList = await this.getChatById(currentItem.uid);
+        this.myListener.emit(
+          EVENT_HAS_READ_MSG,
+          currentItem.notReadCount,
+          SINGLE
+        ); // 发送已读通知
+        this.onlineList[index].notReadCount = 0;
+        lastSendTime = getTimestamp(this.chatList.slice(-1)[0].time);
+      } catch (error) {}
+    },
+
+    // 处理输入
+    handleInput(val) {
+      if (
+        hasSendTyping ||
+        getTimestamp() - lastSendTime > SEND_TYPING_MAX_TIME
+      ) {
+        // console.log("expried");
         return;
       }
-      this.showItem = currentItem;
-      await this.getChatById(currentItem.uid);
-      this.myListener.emit(EVENT_HAS_READ_MSG, currentItem.notReadCount, SINGLE); // 发送已读通知
-      this.onlineList[index].notReadCount = 0;
+      this.WS.send("typing", {
+        uid: this.showItem.uid
+      });
+
+      hasSendTyping = true;
+    },
+
+    /**
+     * @deprecated 监听打字
+     */
+    listenTyping() {
+      const listen = this.myListener.on(EVENT_TYPING, datas => {
+        const showItem = this.showItem;
+        if (!showItem) {
+          return;
+        }
+
+        if (showItem.uid === datas.uid) {
+          // 对面正在typing
+          this.$set(this.showItem, "content", "对方正在输入..");
+          if (timer) {
+            clearTimeout(timer);
+          }
+          timer = setTimeout(() => {
+            this.$set(this.showItem, "content", null);
+          }, SEND_TYPING_MAX_TIME * 500); // 15s
+        }
+      });
+      msgListener.push(listen);
+    },
+
+    // 监听新消息
+    listenMessage() {
+      const listen = this.myListener.on(EVENT_NEW_SINGLE_MSG, data => {
+        if (!this.chatList) {
+          this.chatList = [];
+        }
+
+        // 判断在线列表
+        if (!this.onlineList || !this.onlineList.length) {
+          return;
+        }
+
+        if (this.showItem && data.sendUid === this.showItem.uid) {
+          this.chatList.push(data);
+          this.getChatById(data.sendUid);
+          // 阅读了一条
+          this.myListener.emit(EVENT_HAS_READ_MSG, 1, SINGLE); // 发送已读通知
+          lastSendTime = getTimestamp(); // 更新已读时间
+          hasSendTyping = false;
+          clearTimeout(timer);
+          this.showItem.content = null;
+          return;
+        }
+
+        // 查找房间给好友未读数加1
+        for (let i = 0; i < this.onlineList.length; i++) {
+          const item = this.onlineList[i];
+          // uid === sendUid
+          if (item.uid === data.sendUid) {
+            item.notReadCount++;
+            item.last = data;
+            this.$set(this.onlineList, i, item);
+            break;
+          }
+        }
+      });
+
+      msgListener.push(listen);
     },
 
     async getChatById(uid) {
@@ -49,8 +157,7 @@ export default {
           uid
         }
       });
-      this.chatList = res;
-      return;
+      return res || [];
     },
 
     getOnlineList() {
@@ -59,8 +166,8 @@ export default {
         method: "get"
       }).then(res => {
         this.onlineList = (res || []).filter(item => item && item.uid);
-        // this.showChat(0);
         this.listenMessage();
+        this.listenTyping();
       });
     },
 
@@ -91,49 +198,22 @@ export default {
           uid: this.showItem.uid,
           content: content
         }
-      }).then(res => {
-        if (!this.chatList) {
-          this.chatList = [];
-        }
-        this.$refs["chatRef"].clearInput();
-        this.chatList.push(res);
-      });
-    },
-
-    listenMessage() {
-      this.WS.on("message", (data, type) => {
-        if (type !== SINGLE) {
-          return;
-        }
-        this.$notify({
-          title: "消息",
-          message: "你有新的消息",
-          type: "success",
-          iconClass: "el-icon-message"
-        });
-        if (!this.chatList) {
-          this.chatList = [];
-        }
-
-        if (this.showItem && data.sendUid === this.showItem.uid) {
-          this.chatList.push(data);
-        } else {
-          // 判断在线列表
-          if (!this.onlineList || !this.onlineList.length) {
-            return;
+      }).then(
+        res => {
+          if (!this.chatList) {
+            this.chatList = [];
           }
-
-          for (let i = 0; i < this.onlineList.length; i++) {
-            const item = this.onlineList[i];
-            if (item.uid === data.sendUid) {
-              item.notReadCount++;
-              item.last = data;
-              this.$set(this.onlineList, i, item);
-              break;
-            }
-          }
+          this.$refs["chatRef"].clearInput();
+          this.chatList.push(res);
+        },
+        () => {
+          this.$message({
+            showClose: true,
+            message: "消息发送失败，请重试",
+            type: "error"
+          });
         }
-      });
+      );
     }
   }
 };

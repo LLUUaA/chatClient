@@ -4,7 +4,7 @@ const config = {
     socketUrl: '',
 };
 
-const isDev = true && process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === 'development';
 if(isDev) {
     config.requestUrl = "http://127.0.0.1:3003/";
     config.uploadUrl = "http://127.0.0.1:3002/";

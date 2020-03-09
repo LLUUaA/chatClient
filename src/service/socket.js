@@ -23,7 +23,7 @@ export default function (session, cb) {
       const [errCode, errMsg] = err.split(",");
       if(Number(errCode) === 401) {
         socket.close();
-        console.warn("socket disconnected:");
+        console.warn("socket disconnected");
       }
     } catch (error) { }
   });

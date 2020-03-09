@@ -6,10 +6,13 @@ export default {
     }
     const mapLen = listenMap.get(event).size;
     listenMap.get(event).set(mapLen, cb);
-    // 返回一个取消listen方法
-    return function (){
-        return listenMap.get(event).delete(mapLen);
-      };
+
+    return {
+      // 返回一个取消listen方法
+      cancel: function () {
+        listenMap.get(event).delete(mapLen);
+      },
+    }
   },
 
   emit: function (event, ...arg) {

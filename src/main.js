@@ -15,7 +15,9 @@ import * as Filters from './filter'
 // listen
 import listen from './service/listen';
 
-import { getSession } from './service/session'
+import {
+  getSession
+} from './service/session'
 import globalData from './globalData'
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
@@ -30,8 +32,18 @@ Vue.prototype.axios = axios
 Vue.prototype.dayjs = dayjs
 Vue.prototype.myListener = listen;
 
+Vue.prototype.destroyedListener = function (listens) {
+  try {
+    for (const {cancel } of listens) {
+      cancel && cancel();
+    }
+  } catch (error) {
+
+  }
+}
+
 // register filter
-Object.keys(Filters).forEach(k => Vue.filter(k,Filters[k]));
+Object.keys(Filters).forEach(k => Vue.filter(k, Filters[k]));
 
 // router beforeEach
 router.beforeEach((to, from, next) => {

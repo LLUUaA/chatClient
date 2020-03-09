@@ -2,14 +2,14 @@
   <div class="chat-box friend-box" v-if="chatInfo">
     <div class="item flex">
       <div class="avatar">
-        <img :src="chatInfo.avatar || defaultIcon">
+        <img :src="chatInfo.avatar || chatInfo.avatar || defaultIcon">
       </div>
       <div class="right">
         <div class="m-t flex">
           <span class="name">{{chatInfo.nickName || chatInfo.name}}</span>
           <!-- <span class="time"></span> -->
         </div>
-        <div class="content">{{chatInfo.postscript || ''}}</div>
+        <div class="content">{{chatInfo.content || chatInfo.signature || chatInfo.postscript || ''}}</div>
       </div>
     </div>
     <!-- chat wrap -->
@@ -24,12 +24,12 @@
               </div>
               <div class="content">{{item.content | decodeContent}}</div>
             </div>
-            <div class="time">{{item.time | time}}</div>
+            <div class="time">{{item.time | dateTime}}</div>
           </div>
         </template>
         <div class="no-more" v-if="chatHistory && chatHistory.length === 0">没有聊天内容，说点什么吧</div>
       </div>
-      <inputComponent ref="inputRef" @send="sendMessage"> </inputComponent>
+      <inputComponent ref="inputRef" @input="handleInput" @send="sendMessage"> </inputComponent>
     </div>
   </div>
   <div v-else class="chat-box friend-box no-chat-wrap">
@@ -89,6 +89,10 @@ export default {
   methods: {
     sendMessage(content) {
       this.$emit("send", content);
+    },
+
+    handleInput(val) {
+      this.$emit("input", val);
     },
 
     clearInput() {

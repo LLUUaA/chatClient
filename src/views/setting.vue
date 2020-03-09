@@ -2,12 +2,7 @@
   <div class="wrap">
     <el-form :model="formModal" status-icon :rules="rules" ref="formModal" label-width="100px" class="demo-ruleForm">
       <el-form-item v-show="!state1" style="text-align:center;">
-        <div class="file-list avatar">
-          <img width="100%" :src="formModal.avatar" alt="">
-        </div>
-        <el-upload class="uload-wrap" :action="uploadUrl" :limit="1" accept="image/*" :headers="uploadHeaders" :on-success="handleSuccess" list-type="picture-card" enctype="multipart/form-data">
-          <i class="el-icon-plus"></i>
-        </el-upload>
+        <avatarComponent :avatar="formModal.avatar" :defalutIcon="defalutIcon" @success="this.handleSuccess" />
       </el-form-item>
 
       <el-form-item>
@@ -44,16 +39,21 @@
 
 <script>
 import DefalutIcon from "@/assets/icon-user-avatar.svg";
-import { uploadUrl } from '../config';
+import AvatarComponent from "@/components/uploadAvatar";
+
 import {
   EVENT_GET_OWNER_INFO,
   EVENT_UPDATE_OWNER_INFO
 } from "@/service/constant";
+
+const msgListener = [];
 export default {
   name: "setting",
+  components: {
+    avatarComponent: AvatarComponent
+  },
   data() {
     return {
-      uploadUrl: uploadUrl+'upload',
       formModal: {
         nickName: "",
         signature: "",
@@ -76,21 +76,19 @@ export default {
         age: [{ trigger: "blur" }]
       },
       defalutIcon: DefalutIcon,
-      uploadHeaders: {
-        Authorization: `SessionKey ${this.$globalData.session}`
-      },
       state1: false,
       state2: false
     };
   },
 
+  destroyed() {
+    this.destroyedListener(msgListener);
+  },
+
   mounted() {
-    console.log("process", process, process.env.NODE_ENV);
-    this.myListener.on(EVENT_GET_OWNER_INFO, userInfo => {
-      this.formModal.nickName = userInfo.nickName;
-      this.formModal.signature = userInfo.signature;
-      this.formModal.avatar = userInfo.avatar || defalutIcon;
-    });
+    this.setUserInfo(this.$globalData.userInfo);
+    const listen = this.myListener.on(EVENT_GET_OWNER_INFO, this.setUserInfo);
+    msgListener.push(listen);
   },
 
   methods: {
@@ -112,14 +110,20 @@ export default {
       });
     },
 
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    handleSuccess(avatar) {
+      this.formModal.avatar = avatar;
     },
 
-    handleSuccess(resp) {
-      if (resp.fileUrl) {
-        this.formModal.avatar = resp.fileUrl;
-      }
+    setUserInfo(userInfo) {
+      try {
+        this.formModal.nickName = userInfo.nickName;
+        this.formModal.signature = userInfo.signature;
+        this.formModal.avatar = userInfo.avatar;
+      } catch (error) {}
+    },
+
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     }
   }
 };
@@ -145,25 +149,6 @@ export default {
   background-size: 3700px;
   background-color: rgb(150, 140, 255);
   background-position: right;
-}
-
-.file-list {
-  width: 148px;
-  height: 148px;
-  margin: 0 auto;
-  border: 1px solid #cecece;
-  border-radius: 50%;
-}
-
-.uload-wrap {
-  position: absolute;
-  width: 148px;
-  height: 148px;
-  overflow: hidden;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
 }
 </style>
 

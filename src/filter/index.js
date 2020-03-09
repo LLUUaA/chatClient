@@ -1,15 +1,15 @@
 import dayjs from 'dayjs'
 
-export function time(value) {
+export function dateTime(value) {
   return dayjs(value).format('YYYY-MM-DD hh:mm');
 }
 
-export function fromNow(value) {
-  return dayjs(value).fromNow();
-
+export function time(value) {
+  return dayjs(value).format('hh:mm');
 }
 
 export function birthday(value) {
+  if(!value) return '-'
   return dayjs(value).format('YYYY-MM-DD');
 }
 

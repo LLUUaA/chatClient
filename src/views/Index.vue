@@ -42,11 +42,18 @@ import {
   EVENT_HAS_READ_MSG,
   EVENT_GET_OWNER_INFO,
   EVENT_UPDATE_OWNER_INFO,
+  EVENT_NEW_SINGLE_MSG,
+  EVENT_NEW_ROOM_MSG,
+  EVENT_TYPING,
+
   ROOM,
   SINGLE,
+  TYPING,
   ASIDE_ROOM_NUM,
   ASIDE_SINGLE_NUM
 } from "@/service/constant";
+const msgListener = [];
+
 export default {
   name: "index",
   data() {
@@ -84,6 +91,10 @@ export default {
     };
   },
 
+  destroyed() {
+    this.destroyedListener(msgListener);
+  },
+
   beforeMount() {
     // 个人信息
     this.getOwnerInfo();
@@ -93,23 +104,26 @@ export default {
     this.handleCurrentShow(this.$route.path);
     // 监听路由变化
     this.$router.beforeEach((to, from, next) => {
-      this.handleCurrentShow(to.path);
-      next();
-      setTimeout(() => {
-        this.emitMsg(EVENT_GET_OWNER_INFO, this.$globalData.userInfo);
-      }, 100);
+      try {
+        next();
+        this.handleCurrentShow(to.path);
+        setTimeout(() => {
+          this.emitMsg(EVENT_GET_OWNER_INFO, this.$globalData.userInfo);
+        }, 100);
+      } catch (error) {}
     });
   },
 
   mounted() {
     // SOCKET
-    this.listenSocket(); 
+    this.listenSocket();
     // update ownerInfo
-    this.myListener.on(EVENT_UPDATE_OWNER_INFO,() => {
+    const listen1 = this.myListener.on(EVENT_UPDATE_OWNER_INFO, () => {
       this.getOwnerInfo();
-    })
+    });
+
     // read msg
-    this.myListener.on(EVENT_HAS_READ_MSG, (count, type) => {
+    const listen2 = this.myListener.on(EVENT_HAS_READ_MSG, (count, type) => {
       switch (type) {
         case SINGLE:
           this.navList[0].newMsgCount -= count;
@@ -121,12 +135,43 @@ export default {
           break;
       }
     });
+
+    msgListener.push(listen1, listen2);
   },
 
   methods: {
     listenSocket() {
-      this.WS.on("message", (data, type) => {
+      this.WS.on("message", (type, data) => {
         console.log("global listenSocket:", type, data);
+        switch (type) {
+          case ROOM:
+            this.$notify({
+              title: "消息",
+              message: "你有新的聊天消息",
+              type: "success",
+              iconClass: "el-icon-message"
+            });
+            this.myListener.emit(EVENT_NEW_ROOM_MSG, data);
+            break;
+
+          case SINGLE:
+            this.$notify({
+              title: "消息",
+              message: "你有新的个人消息",
+              type: "success",
+              iconClass: "el-icon-message"
+            });
+            this.myListener.emit(EVENT_NEW_SINGLE_MSG, data);
+            break;
+
+          case TYPING:
+            this.myListener.emit(EVENT_TYPING, data);
+            break;
+
+          default:
+            break;
+        }
+
         this.checkMsg(type, 1);
       });
     },
@@ -282,7 +327,7 @@ export default {
   list-style: none;
 }
 .aside-nav-bar ul li {
-  padding: 20px 0;
+  padding: 10px 0;
   margin: 20px 0;
   color: #b9babc;
   font-size: 14px;
@@ -334,21 +379,19 @@ export default {
 }
 
 .index-container {
-  position: absolute;
+  position: relative;
   width: 100%;
   max-width: 1600px;
   overflow: hidden;
-  padding: 150px 100px;
+  padding: 12vh 10vw;
   height: 100%;
-  left: 50%;
-  top: 50%;
-  margin: 0 auto;
-  transform: translate(-50%, -50%);
+  /* margin: 0 auto; */
 }
 
 .online-left {
   display: flex;
   height: 100%;
+  background-color: #f7fcff;
 }
 
 .online-left .avatar {
@@ -372,9 +415,8 @@ export default {
 }
 
 .friend-box {
-  /* min-width: 250px;
-  max-width: 250px; */
-  width: 450px;
+  min-width: 270px;
+  max-width: 270px;
   background-color: #f7fcff;
 }
 
@@ -401,6 +443,7 @@ export default {
 
 .chat-box.friend-box {
   width: 100%;
+  max-width: 100%;
   padding: 0 40px;
   background-color: white;
 }
@@ -473,5 +516,11 @@ export default {
   margin: 30px 0;
   text-align: center;
   color: #afafaf;
+}
+
+@media screen and (max-width: 1660px) {
+  .index-container {
+    padding: 5vh 6vw;
+  }
 }
 </style>

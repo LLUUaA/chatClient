@@ -1,11 +1,12 @@
   <template>
-  <el-tabs type="border-card">
+  <div style="padding:20px;">
+  <el-tabs type="border-card" class="tabs-wrap">
     <el-tab-pane label="添加好友">
       <el-row class="flex">
         <el-input icon="search" placeholder="昵称搜索或用户号搜索" v-model="keyword" @keyup.enter.native="getAccountList" class="search-input" />
         <el-button type="primary" icon="el-icon-search" @click="getAccountList">搜索</el-button>
       </el-row>
-      <el-table v-loading="loading" :data="accountList" style="width: 100%" :expand-row-keys="currentKey" row-key="id">
+      <el-table v-loading="loading" :data="accountList" style="width: 100%" height="450" :expand-row-keys="currentKey" row-key="id">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
@@ -14,9 +15,6 @@
               </el-form-item>
               <el-form-item label="性别">
                 <span>{{ props.row.sex | sex}}</span>
-              </el-form-item>
-              <el-form-item label="用户No">
-                <span>{{ props.row.userNo }}</span>
               </el-form-item>
               <el-form-item label="用户ID">
                 <span>{{ props.row.uid }}</span>
@@ -30,7 +28,7 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="用户No" prop="userNo">
+        <el-table-column label="用户id" prop="uid">
         </el-table-column>
         <el-table-column label="昵称" prop="nickName">
         </el-table-column>
@@ -47,7 +45,7 @@
         <el-input icon="search" placeholder="搜索房间号或房间名" v-model="keyword2" @keyup.enter.native="getRoomList" class="search-input" />
         <el-button type="primary" icon="el-icon-search" @click="getRoomList">搜索</el-button>
       </el-row>
-      <el-table :data="roomList" style="width: 100%" :expand-row-keys="currentKey" row-key="id">
+      <el-table :data="roomList" style="width: 100%"  height="450" :expand-row-keys="currentKey" row-key="id">
         <el-table-column type="expand">
           <template slot-scope="props">
             <el-form label-position="left" inline class="demo-table-expand">
@@ -72,9 +70,9 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column label="群 ID" prop="id">
+        <el-table-column label="房间号码" prop="roomNo">
         </el-table-column>
-        <el-table-column label="群名称" prop="name">
+        <el-table-column label="房间名称" prop="name">
         </el-table-column>
         <el-table-column label="操作" prop="">
           <template slot-scope="scope">
@@ -85,6 +83,7 @@
       </el-table>
     </el-tab-pane>
   </el-tabs>
+  </div>
 </template>
 
 <script>
@@ -96,7 +95,7 @@ export default {
       keyword2: null,
       accountList: null,
       roomList: null,
-      loading: null
+      loading: null,
     };
   },
 
@@ -128,9 +127,9 @@ export default {
     getRoomList() {
       this.loading = true;
       this.axios({
-        url: 'room/search',
+        url: "room/search",
         params: {
-          keyword: this.keyword2 || '',
+          keyword: this.keyword2 || ""
         }
       })
         .then(res => {
@@ -199,8 +198,13 @@ export default {
 </script>
 
 <style scoped>
+.tabs-wrap {
+  width: 100%;
+}
+
 .search-input {
   max-width: 300px;
+  margin-right: 20px;
 }
 
 .demo-table-expand {
