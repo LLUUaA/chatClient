@@ -1,29 +1,31 @@
 <template>
   <el-container>
-    <el-main class="main-wrap">
+    <div class="main-wrap">
       <!-- <img src="../assets/logo.png"> -->
       <el-form :rules="rules" :model="form" ref="ruleForm">
-      <p>账号注册</p>
-      <el-form-item prop="nickName">
-        <el-input v-model="form.nickName" prefix-icon="el-icon-info" placeholder="昵称"></el-input>
-      </el-form-item>
+        <p>账号注册</p>
+        <el-form-item prop="nickName">
+          <el-input v-model="form.nickName" prefix-icon="el-icon-info" placeholder="昵称"></el-input>
+        </el-form-item>
 
-      <el-form-item prop="account"  >
-        <el-input v-model="form.account" prefix-icon="el-icon-mobile-phone" placeholder="手机号或邮箱"></el-input>
-      </el-form-item>
+        <el-form-item prop="account">
+          <el-input v-model="form.account" prefix-icon="el-icon-mobile-phone" placeholder="手机号或邮箱"></el-input>
+        </el-form-item>
 
-      <el-form-item prop="password">
-        <el-input v-model="form.password" prefix-icon="el-icon-view" placeholder="密码" type="password"></el-input>
-      </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="form.password" prefix-icon="el-icon-view" placeholder="密码" type="password"></el-input>
+        </el-form-item>
 
-      <el-form-item prop="comfirmPassword">
-        <el-input v-model="form.comfirmPassword" prefix-icon="el-icon-view" placeholder="确认密码" type="password"></el-input>
-      </el-form-item>
+        <el-form-item prop="comfirmPassword">
+          <el-input v-model="form.comfirmPassword" prefix-icon="el-icon-view" placeholder="确认密码" type="password"></el-input>
+        </el-form-item>
 
-      <el-button type="primary" :loading="showLoading" @click="register">注册</el-button>
+        <el-button type="primary" :loading="showLoading" @click="register">注册</el-button>
       </el-form>
-      <p><router-link to="/login">返回登陆</router-link></p>
-    </el-main>
+      <p>
+        <router-link to="/login">返回登陆</router-link>
+      </p>
+    </div>
   </el-container>
 </template>
 
@@ -73,18 +75,20 @@ export default {
           url: "account/register",
           method: "post",
           data: this.form
-        }).then(res=>{
-          this.$message({
-            message: "注册成功",
-            type: "success"
-          });
-          this.$router.push('/login');
-        }).catch(err=>{
-          this.$message({
-            message: err.data.content || "注册失败",
-            type: "fail"
-          });
         })
+          .then(res => {
+            this.$message({
+              message: "注册成功",
+              type: "success"
+            });
+            this.$router.push("/login");
+          })
+          .catch(err => {
+            this.$message({
+              message: err.data.content || "注册失败",
+              type: "fail"
+            });
+          });
       });
     }
   }
@@ -99,17 +103,18 @@ export default {
 }
 
 .main-wrap {
+  width: 100%;
+  padding: 20px;
+  color: #333;
   background-color: rgba(255, 255, 255, 1);
-    padding: 20px;
-    color: #333;
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
-.main-wrap p{
+.main-wrap p {
   text-align-last: center;
 }
 
-.main-wrap a{
+.main-wrap a {
   color: #999;
   font-size: 13px;
 }

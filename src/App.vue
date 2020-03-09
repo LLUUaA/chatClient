@@ -27,10 +27,6 @@ body, ul,li,dl,dt {
   background:linear-gradient(45deg,#6078f0, #627af4);
 }
 
-.el-main {
-    padding: 0;
-}
-
 .flex {
   display: flex;
   display: -webkit-flex;

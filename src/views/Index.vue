@@ -251,6 +251,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
+
+.el-main {
+    padding: 0 !important;
+}
 /** aside nav bar start**/
 .aside-nav-bar {
   width: 100px;
