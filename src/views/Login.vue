@@ -42,9 +42,8 @@ export default {
           this.$globalData.session = res.sessionKey;
           this.$router.push('/index/single')
         },err => {
-          console.log("err", err);
           this.$message({
-            message: err.data.content || "登陆失败",
+            message: "账号或密码不正确",
             type: "warning"
           });
         })
@@ -63,12 +62,20 @@ export default {
   padding: 200px 0;
 }
 
+.main-wrap {
+  background-color: rgba(255, 255, 255, 1);
+    padding: 20px;
+    color: #333;
+    border-radius: 10px;
+}
+
 .main-wrap p{
   text-align-last: center;
 }
 
 .main-wrap a{
-  color: #eee;
+  color: #999;
+  font-size: 13px;
 }
 
 .el-input,

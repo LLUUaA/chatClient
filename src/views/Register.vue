@@ -22,7 +22,7 @@
 
       <el-button type="primary" :loading="showLoading" @click="register">注册</el-button>
       </el-form>
-      <p><router-link to="/login" class="back-login-btn">返回登陆</router-link></p>
+      <p><router-link to="/login">返回登陆</router-link></p>
     </el-main>
   </el-container>
 </template>
@@ -98,12 +98,20 @@ export default {
   padding: 200px 0;
 }
 
+.main-wrap {
+  background-color: rgba(255, 255, 255, 1);
+    padding: 20px;
+    color: #333;
+    border-radius: 10px;
+}
+
 .main-wrap p{
   text-align-last: center;
 }
 
 .main-wrap a{
-  color: #eee;
+  color: #999;
+  font-size: 13px;
 }
 
 .el-button {
@@ -112,9 +120,5 @@ export default {
 
 .el-button {
   width: 100%;
-}
-.back-login-btn {
-  font-size: 13px;
-  line-height: 40px;
 }
 </style>
