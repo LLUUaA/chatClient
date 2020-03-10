@@ -45,10 +45,11 @@ import {
   EVENT_NEW_SINGLE_MSG,
   EVENT_NEW_ROOM_MSG,
   EVENT_TYPING,
-
+  EVENT_ONLNIE_STATUS,
   ROOM,
   SINGLE,
   TYPING,
+  ONLNIE_STATUS,
   ASIDE_ROOM_NUM,
   ASIDE_SINGLE_NUM
 } from "@/service/constant";
@@ -93,6 +94,7 @@ export default {
 
   destroyed() {
     this.destroyedListener(msgListener);
+    this.WS.removeAllListeners();
   },
 
   beforeMount() {
@@ -144,6 +146,7 @@ export default {
       this.WS.on("message", (type, data) => {
         console.log("global listenSocket:", type, data);
         switch (type) {
+          // 多人聊天
           case ROOM:
             this.$notify({
               title: "消息",
@@ -153,7 +156,7 @@ export default {
             });
             this.myListener.emit(EVENT_NEW_ROOM_MSG, data);
             break;
-
+          // 个人聊天
           case SINGLE:
             this.$notify({
               title: "消息",
@@ -164,8 +167,14 @@ export default {
             this.myListener.emit(EVENT_NEW_SINGLE_MSG, data);
             break;
 
+          // 打字状态
           case TYPING:
             this.myListener.emit(EVENT_TYPING, data);
+            break;
+
+          // 在线状态
+          case ONLNIE_STATUS:
+            this.myListener.emit(EVENT_ONLNIE_STATUS, data);
             break;
 
           default:
@@ -251,9 +260,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-
 .el-main {
-    padding: 0 !important;
+  padding: 0 !important;
 }
 /** aside nav bar start**/
 .aside-nav-bar {
@@ -320,6 +328,11 @@ export default {
 
 .avatar.online::before {
   background-color: #49ff3e;
+  visibility: visible;
+}
+
+.avatar.offline::before {
+  background-color: #ff4e45;
   visibility: visible;
 }
 

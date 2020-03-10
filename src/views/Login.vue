@@ -40,7 +40,7 @@ export default {
               message: "登陆成功",
               type: "success"
             });
-            setSession(res.sessionKey);
+            setSession(res.sessionKey, res.expireTime);
             this.$globalData.userInfo = res;
             this.$globalData.session = res.sessionKey;
             this.$router.push("/index/single");

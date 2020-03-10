@@ -1,6 +1,6 @@
 <template>
   <div class="online-left">
-    <friendsComponent @show="showChat" :datas="onlineList"> </friendsComponent>
+    <friendsComponent @show="showChat" :datas="friendList"> </friendsComponent>
     <chatComponent ref="chatRef" @input="handleInput" :chatHistory="chatList" :chatInfo="showItem" @send="sendMessage"></chatComponent>
   </div>
 </template>
@@ -12,8 +12,10 @@ import {
   EVENT_HAS_READ_MSG,
   EVENT_NEW_SINGLE_MSG,
   EVENT_TYPING,
+  EVENT_ONLNIE_STATUS,
   ASIDE_SINGLE_NUM,
-  SINGLE
+  SINGLE,
+  TYPING
 } from "@/service/constant";
 
 const msgListener = [];
@@ -37,7 +39,7 @@ export default {
   data() {
     return {
       currentIndex: null,
-      onlineList: null,
+      friendList: null,
       showItem: null,
       chatList: null
     };
@@ -46,15 +48,18 @@ export default {
     this.destroyedListener(msgListener);
   },
 
-  mounted() {
-    this.getOnlineList();
+  async mounted() {
+    await this.getOnlineList();
+    this.listenMessage();
+    this.listenTyping();
+    this.listenOnlieStatus();
   },
 
   methods: {
     // 聊天
     async showChat(index) {
       try {
-        const currentItem = this.onlineList[index];
+        const currentItem = this.friendList[index];
         if (!currentItem) {
           return;
         }
@@ -65,7 +70,7 @@ export default {
           currentItem.notReadCount,
           SINGLE
         ); // 发送已读通知
-        this.onlineList[index].notReadCount = 0;
+        this.friendList[index].notReadCount = 0;
         lastSendTime = getTimestamp(this.chatList.slice(-1)[0].time);
       } catch (error) {}
     },
@@ -79,7 +84,7 @@ export default {
         // console.log("expried");
         return;
       }
-      this.WS.send("typing", {
+      this.WS.send(TYPING, {
         uid: this.showItem.uid
       });
 
@@ -110,6 +115,22 @@ export default {
       msgListener.push(listen);
     },
 
+    // 监听好友上线状态
+    listenOnlieStatus() {
+      const listen = this.myListener.on(EVENT_ONLNIE_STATUS, data => {
+        const fUid = data.uid;
+        const friendList = this.friendList;
+        for (let i = 0; i < friendList.length; i++) {
+          if (friendList[i].uid === fUid) {
+            this.$set(this.friendList[i], "onlineStatus", data.status);
+            break;
+          }
+        }
+      });
+
+      msgListener.push(listen);
+    },
+
     // 监听新消息
     listenMessage() {
       const listen = this.myListener.on(EVENT_NEW_SINGLE_MSG, data => {
@@ -118,10 +139,9 @@ export default {
         }
 
         // 判断在线列表
-        if (!this.onlineList || !this.onlineList.length) {
+        if (!this.friendList || !this.friendList.length) {
           return;
         }
-
         if (this.showItem && data.sendUid === this.showItem.uid) {
           this.chatList.push(data);
           this.getChatById(data.sendUid);
@@ -130,18 +150,18 @@ export default {
           lastSendTime = getTimestamp(); // 更新已读时间
           hasSendTyping = false;
           clearTimeout(timer);
-          this.showItem.content = null;
+          this.$set(this.showItem, "content", null);
           return;
         }
 
         // 查找房间给好友未读数加1
-        for (let i = 0; i < this.onlineList.length; i++) {
-          const item = this.onlineList[i];
+        for (let i = 0; i < this.friendList.length; i++) {
+          const item = this.friendList[i];
           // uid === sendUid
           if (item.uid === data.sendUid) {
             item.notReadCount++;
             item.last = data;
-            this.$set(this.onlineList, i, item);
+            this.$set(this.friendList, i, item);
             break;
           }
         }
@@ -160,15 +180,13 @@ export default {
       return res || [];
     },
 
-    getOnlineList() {
-      this.axios({
+    async getOnlineList() {
+      const res = await this.axios({
         url: "friend/list",
         method: "get"
-      }).then(res => {
-        this.onlineList = (res || []).filter(item => item && item.uid);
-        this.listenMessage();
-        this.listenTyping();
       });
+      this.friendList = (res || []).filter(item => item && item.uid);
+      return;
     },
 
     // 发送消息

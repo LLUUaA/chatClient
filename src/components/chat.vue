@@ -60,7 +60,7 @@ export default {
   props: {
     chatHistory: Array,
     showAvatar: Boolean,
-    chatInfo: Object
+    chatInfo: null
   },
 
   watch: {
@@ -72,17 +72,9 @@ export default {
       },
       deep: false
     },
-    type: function(oldval, newval) {
-      switch (newval) {
-        case ROOM:
-          this.defaultIcon = defaultRoomIcon;
-          break;
-        case SINGLE:
-          this.defaultIcon = defaultUserIcon;
-          break;
-        default:
-          break;
-      }
+
+    chatInfo: function(oldval, newval) {
+      console.log("chatInfo", oldval, newval);
     }
   },
 

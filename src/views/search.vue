@@ -165,7 +165,13 @@ export default {
             type: "success"
           });
         },
-        err => {}
+        err => {
+          this.$message({
+            showClose: true,
+            message: err.data.code === 1062 ? '你已经添加过此房间' : err.data.content || "添加失败，请重试",
+            type: "warning"
+          });
+        }
       );
     },
 
@@ -188,7 +194,7 @@ export default {
         .catch(err => {
           this.$message({
             showClose: true,
-            message: err.data.content || "添加失败，请重试",
+            message: err.data.code === 1062 ? '你已经添加过此好友' : err.data.content || "添加失败，请重试",
             type: "warning"
           });
         });

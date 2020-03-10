@@ -2,7 +2,7 @@
   <div class="friend-box">
     <template v-for="(data,index) in datas">
       <div class="item hover flex" :data-count="data.notReadCount" :class="{ current: index === currentIndex, 'not-read': data.notReadCount>0 }" :key="data.uid" @click="showChat(index)">
-        <div class="avatar">
+        <div class="avatar" :class="{online: data.onlineStatus,offline: data.onlineStatus===0}">
           <img :src="data.avatar || data.logo || defalutIcon">
         </div>
         <div class="right">

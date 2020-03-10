@@ -7,10 +7,12 @@ module.exports = {
     EVENT_NEW_SINGLE_MSG: '_EVENT_NEW_SINGLE_MSG', // 有个人新消息
     EVENT_NEW_ROOM_MSG: '_EVENT_NEW_ROOM_MSG', // 有房间新消息
     EVENT_TYPING: '_EVENT_TYPING', // 对方正在输入中
+    EVENT_ONLNIE_STATUS: '_EVENT_ONLNIE_STATUS', // 用户在线状态
 
     ROOM: 'room', // room 标记（socket）
     SINGLE:'single', // single 标记（socket）
     TYPING:'typing', // typing
+    ONLNIE_STATUS: 'onlineStatus',
 
     ASIDE_SEARCH_NUM:3, // search 在aside位置
     ASIDE_ROOM_NUM:2, // room 在aside位置

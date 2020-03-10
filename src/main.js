@@ -14,6 +14,7 @@ import WS from './service/socket'
 import * as Filters from './filter'
 // listen
 import listen from './service/listen';
+import config from './config';
 
 import {
   getSession
@@ -31,7 +32,7 @@ Vue.prototype.WS = null;
 Vue.prototype.axios = axios
 Vue.prototype.dayjs = dayjs
 Vue.prototype.myListener = listen;
-
+// destroyedLinster
 Vue.prototype.destroyedListener = function (listens) {
   try {
     for (const {cancel } of listens) {
@@ -40,6 +41,12 @@ Vue.prototype.destroyedListener = function (listens) {
   } catch (error) {
 
   }
+}
+
+if (!config.isDev) {
+  console.log = () => {};
+  console.warn = () => {};
+  console.error = () => {};
 }
 
 // register filter
