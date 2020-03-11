@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="file-list avatar">
-            <img width="100%" :src="avatar || defalutIcon" alt="avatar">
+            <img v-imgLoad="{src: avatar, errorSrc: defalutIcon}" width="100%" alt="avatar">
         </div>
         <el-upload class="uload-wrap" :action="uploadUrl" :limit="1" accept="image/*" :headers="uploadHeaders" :on-success="handleSuccess" list-type="picture-card" enctype="multipart/form-data">
             <i class="el-icon-plus"></i>
@@ -22,7 +22,7 @@ export default {
   },
 
   props: {
-    avatar: String,
+    avatar: null,
     defalutIcon: null,
   },
   methods: {

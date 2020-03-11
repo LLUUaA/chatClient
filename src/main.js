@@ -12,6 +12,7 @@ import axios from './service/request'
 import WS from './service/socket'
 // filters
 import * as Filters from './filter'
+import * as Directives from './directive'
 // listen
 import listen from './service/listen';
 import config from './config';
@@ -51,6 +52,8 @@ if (!config.isDev) {
 
 // register filter
 Object.keys(Filters).forEach(k => Vue.filter(k, Filters[k]));
+// register Directive
+Object.keys(Directives).forEach(k => Vue.directive(k, Directives[k]));
 
 // router beforeEach
 router.beforeEach((to, from, next) => {

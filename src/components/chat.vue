@@ -2,7 +2,7 @@
   <div class="chat-box friend-box" v-if="chatInfo">
     <div class="item flex">
       <div class="avatar">
-        <img :src="chatInfo.avatar || chatInfo.avatar || defaultIcon">
+        <img v-imgLoad="{src: chatInfo.avatar || chatInfo.avatar, errorSrc: defaultIcon}">
       </div>
       <div class="right">
         <div class="m-t flex">

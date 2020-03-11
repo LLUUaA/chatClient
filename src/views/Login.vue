@@ -2,10 +2,10 @@
   <el-container>
     <div class="main-wrap">
       <!-- <img src="../assets/logo.png"> -->
-      <p>0 . 0</p>
+      <p>登 录</p>
       <el-input v-model="form.account" prefix-icon="el-icon-mobile-phone" placeholder="账号"></el-input>
       <el-input v-model="form.password" prefix-icon="el-icon-view" placeholder="密码" type="password" @keyup.enter.native="login"></el-input>
-      <el-button type="primary" :loading="showLoading" @click="login">登陆</el-button>
+      <el-button type="primary" :loading="showLoading" @click="login">登录</el-button>
       <p>还没有账号？
         <router-link to="/register">去注册</router-link>
       </p>
@@ -37,7 +37,7 @@ export default {
         .then(
           res => {
             this.$message({
-              message: "登陆成功",
+              message: "登录成功",
               type: "success"
             });
             setSession(res.sessionKey, res.expireTime);
@@ -76,7 +76,7 @@ export default {
 }
 
 .main-wrap p {
-  text-align-last: center;
+  text-align: center;
 }
 
 .main-wrap a {

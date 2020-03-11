@@ -4,7 +4,7 @@
     <el-container>
       <div class="aside-nav-bar">
         <div class="avatar online">
-          <img :src="ownerInfo.avatar || defalutIcon" alt="avatar">
+          <img v-imgLoad="{src: ownerInfo.avatar, errorSrc: defalutIcon}"  alt="avatar">
         </div>
 
         <ul>
@@ -463,6 +463,7 @@ export default {
   max-width: 100%;
   padding: 0 40px;
   background-color: white;
+  overflow: hidden;
 }
 
 .friend-box .item.hover:hover {

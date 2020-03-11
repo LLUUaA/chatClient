@@ -23,7 +23,7 @@
         <el-button type="primary" :loading="showLoading" @click="register">注册</el-button>
       </el-form>
       <p>
-        <router-link to="/login">返回登陆</router-link>
+        <router-link to="/login">返回登录</router-link>
       </p>
     </div>
   </el-container>
@@ -111,7 +111,7 @@ export default {
 }
 
 .main-wrap p {
-  text-align-last: center;
+  text-align: center;
 }
 
 .main-wrap a {
