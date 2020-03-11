@@ -4,7 +4,7 @@
     <el-container>
       <div class="aside-nav-bar">
         <div class="avatar online">
-          <img v-imgLoad="{src: ownerInfo.avatar, errorSrc: defalutIcon}"  alt="avatar">
+          <img v-imgLoad="{src: ownerInfo.avatar, errorSrc: defalutIcon}" alt="avatar">
         </div>
 
         <ul>
@@ -158,12 +158,14 @@ export default {
             break;
           // 个人聊天
           case SINGLE:
-            this.$notify({
-              title: "消息",
-              message: "你有新的个人消息",
-              type: "success",
-              iconClass: "el-icon-message"
-            });
+            if (!data.isAiBenBen) {
+              this.$notify({
+                title: "消息",
+                message: "你有新的个人消息",
+                type: "success",
+                iconClass: "el-icon-message"
+              });
+            }
             this.myListener.emit(EVENT_NEW_SINGLE_MSG, data);
             break;
 
