@@ -46,8 +46,8 @@ Vue.prototype.destroyedListener = function (listens) {
 
 if (!config.isDev) {
   console.log = () => {};
-  console.warn = () => {};
-  console.error = () => {};
+  // console.warn = () => {};
+  // console.error = () => {};
 }
 
 // register filter
