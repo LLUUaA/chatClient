@@ -204,6 +204,7 @@ export default {
 
     // 发送消息
     sendMessage(content) {
+      if(this.sendMessage._lock) { return;}
       if (!this.showItem) {
         this.$message({
           showClose: true,
@@ -221,7 +222,7 @@ export default {
         });
         return;
       }
-
+      this.sendMessage._lock = true;
       this.axios({
         url: "message/room/send",
         method: "post",
@@ -237,8 +238,10 @@ export default {
 
           this.$refs["chatRef"].clearInput();
           this.chatList.push(res);
+          this.sendMessage._lock = false;
         },
         () => {
+          this.sendMessage._lock = false;
           this.$message({
             showClose: true,
             message: "消息发送失败，请重试",
