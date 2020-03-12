@@ -86,7 +86,7 @@ export default {
           .catch(err => {
             this.$message({
               message: err.data.content || "注册失败",
-              type: "fail"
+              type: "warning"
             });
           });
       });
