@@ -9,10 +9,6 @@ export default function (opt = {}) {
       method: 'get',
       baseURL: requestUrl,
       timeout: 6000,
-      headers: {
-        'access-control-allow': '*',
-        'Access-Control-Allow-Origin': '*'
-      },
       ...opt
     }).then(res => {
       resolve(res.data);
