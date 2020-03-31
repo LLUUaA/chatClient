@@ -1,27 +1,20 @@
 # chat-client
 
-> chat-client
+**这是一个聊天客户端**
 
-## Build Setup
+**主要技术:**
 
-``` bash
-# install dependencies
-npm install
+Vue、Element UI、Axios
 
-# serve with hot reload at localhost:8080
-npm run dev
+**主要功能：**
 
-# build for production with minification
-npm run build
+- 一对一聊天
+- 多人聊天
+- 每个人可以创建自己的房间
+- 注册时系统会默认添加一个笨笨机器人陪你聊天
 
-# build for production and view the bundle analyzer report
-npm run build --report
+**辅助功能**
 
-# run unit tests
-npm run unit
-
-# run all tests
-npm test
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+- 新消息提示
+- 好友在线离线提示
+- 好友打字状态提示
