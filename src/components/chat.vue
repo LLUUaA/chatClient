@@ -2,7 +2,7 @@
   <div class="chat-box friend-box" v-if="chatInfo">
     <div class="item flex">
       <div class="avatar">
-        <img v-imgLoad="{src: chatInfo.avatar || chatInfo.avatar, errorSrc: defaultIcon}">
+        <img v-imgLoad="{src: chatInfo.avatar || chatInfo.logo, errorSrc: defaultIcon}">
       </div>
       <div class="right">
         <div class="m-t flex">
@@ -15,7 +15,7 @@
     <!-- chat wrap -->
     <div class="chat-container">
       <div id="chatWrap" class="chat-wrap">
-        <template v-for="(item,index) in chatHistory">
+        <template v-for="item in chatHistory">
           <div :key="item.id" :class="item.isSender ?'sender': ''" class="chat-item">
             <div>
               <div v-if="!item.isSender && showAvatar" class="avatar room-avatar">
