@@ -1,48 +1,44 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import App from './App'
-import router from './router'
+import Vue from "vue";
+import App from "./App";
+import router from "./router";
 // ElementUI
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import ElementUI from "element-ui";
+import "element-ui/lib/theme-chalk/index.css";
 // axios
-import axios from './service/request'
+import axios from "./service/request";
 // web socket
-import WS from './service/socket'
+import WS from "./service/socket";
 // filters
-import * as Filters from './filter'
-import * as Directives from './directive'
+import * as Filters from "./filter";
+import * as Directives from "./directive";
 // listen
-import listen from './service/listen';
-import config from './config';
+import listen from "./service/listen";
+import config from "./config";
 
-import {
-  getSession
-} from './service/session'
-import globalData from './globalData'
-import dayjs from 'dayjs'
-import 'dayjs/locale/zh-cn'
-dayjs.locale('zh-cn');
+import { getSession } from "./service/session";
+import globalData from "./globalData";
+import dayjs from "dayjs";
+import "dayjs/locale/zh-cn";
+dayjs.locale("zh-cn");
 
-Vue.config.productionTip = false
-Vue.use(ElementUI)
+Vue.config.productionTip = false;
+Vue.use(ElementUI);
 
-Vue.prototype.$globalData = globalData
+Vue.prototype.$globalData = globalData;
 Vue.prototype.WS = null;
-Vue.prototype.axios = axios
-Vue.prototype.dayjs = dayjs
+Vue.prototype.axios = axios;
+Vue.prototype.dayjs = dayjs;
 Vue.prototype.myListener = listen;
 // destroyedLinster
-Vue.prototype.destroyedListener = function (listens) {
+Vue.prototype.destroyedListener = function(listens) {
   try {
-    for (const {cancel } of listens) {
+    for (const { cancel } of listens) {
       cancel && cancel();
     }
-  } catch (error) {
-
-  }
-}
+  } catch (error) {}
+};
 
 if (!config.isDev) {
   console.log = () => {};
@@ -66,23 +62,22 @@ router.beforeEach((to, from, next) => {
   if (connected) {
     return next();
   }
-  WS(globalData.session, (socket) => {
+  WS(globalData.session, socket => {
     Vue.prototype.WS = socket;
     if (socket) {
       next();
     } else {
-      router.push('/login');
+      router.push("/login");
     }
   });
-
-})
+});
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  el: "#app",
   router,
   components: {
     App
   },
-  template: '<App/>'
-})
+  template: "<App/>"
+});

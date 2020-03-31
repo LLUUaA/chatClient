@@ -13,6 +13,7 @@ import {
   EVENT_NEW_SINGLE_MSG,
   EVENT_TYPING,
   EVENT_ONLNIE_STATUS,
+  EVENT_ADD_FRIEND,
   ASIDE_SINGLE_NUM,
   SINGLE,
   TYPING
@@ -50,9 +51,11 @@ export default {
 
   async mounted() {
     await this.getOnlineList();
+    this.listenAddFriend();
     this.listenMessage();
     this.listenTyping();
     this.listenOnlieStatus();
+
   },
 
   methods: {
@@ -89,6 +92,13 @@ export default {
       });
 
       hasSendTyping = true;
+    },
+
+    listenAddFriend() {
+      const listen = this.myListener.on(EVENT_ADD_FRIEND, () => {
+        this.getOnlineList();
+       });
+        msgListener.push(listen);       
     },
 
     /**

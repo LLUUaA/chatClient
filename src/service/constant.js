@@ -8,6 +8,8 @@ module.exports = {
     EVENT_NEW_ROOM_MSG: '_EVENT_NEW_ROOM_MSG', // 有房间新消息
     EVENT_TYPING: '_EVENT_TYPING', // 对方正在输入中
     EVENT_ONLNIE_STATUS: '_EVENT_ONLNIE_STATUS', // 用户在线状态
+    EVENT_ADD_FRIEND: '_EVENT_ADD_FRIEND', // 添加好友
+    EVENT_ADD_ROOM: '_EVENT_ADD_ROOM', // 添加好友
 
     ROOM: 'room', // room 标记（socket）
     SINGLE:'single', // single 标记（socket）

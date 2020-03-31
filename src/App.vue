@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -12,26 +11,30 @@ export default {
 </script>
 
 <style>
-body, ul,li,dl,dt {
+body,
+ul,
+li,
+dl,
+dt {
   margin: 0;
   padding: 0;
 }
 #app {
   width: 100vw;
   height: 100vh;
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
   color: #2c3e50;
-  background:linear-gradient(45deg,#6078f0, #627af4);
+  background: linear-gradient(45deg, #6078f0, #627af4);
 }
 
 .flex {
   display: flex;
   display: -webkit-flex;
 }
-
 
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
@@ -49,7 +52,7 @@ body, ul,li,dl,dt {
 ::-webkit-scrollbar-thumb {
   border-radius: 2px;
   background: #ccc;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 ::-webkit-scrollbar-thumb:window-inactive {
   background: #eee;

@@ -21,10 +21,10 @@
           <avatarComponent :avatar="roomModal.logo" :defalutIcon="defalutIcon" @success="this.handleSuccess" />
         </el-form-item>
         <el-form-item label="名称" prop="name">
-          <el-input v-model="roomModal.name" autocomplete="off" maxlength="16" show-word-limit></el-input>
+          <el-input v-model="roomModal.name" autocomplete="off" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="房间号" prop="roomNo" show-word-limit>
-          <el-input :disabled="!!roomModal.id" v-model="roomModal.roomNo" type="number" maxlength="20" autocomplete="off"></el-input>
+          <el-input :disabled="!!roomModal.id" v-model="roomModal.roomNo" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="postscript" show-word-limit>
           <el-input v-model="roomModal.postscript" maxlength="100" autocomplete="off"></el-input>
@@ -49,7 +49,8 @@ import {
   ROOM,
   EVENT_HAS_READ_MSG,
   EVENT_NEW_ROOM_MSG,
-  EVENT_GET_OWNER_INFO
+  EVENT_GET_OWNER_INFO,
+  EVENT_ADD_ROOM,
 } from "@/service/constant";
 
 const msgListener = [];
@@ -78,10 +79,13 @@ export default {
         postscript: null
       },
       roomRules: {
-        name: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
-        roomNo: [
+        name: [
           { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+          { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" },
+        ],
+        roomNo: [
+          { required: true, message: "请输入房间号", trigger: "blur" },
+          { min: 6, max: 12, message: "长度在 6 到 12 位数字", trigger: "blur" }
         ],
         postscript: [
           { required: true, message: "请输入活动名称", trigger: "blur" }
@@ -111,7 +115,11 @@ export default {
       this.getRoomList();
     });
 
-    msgListener.push(listen);
+    const listen2 = this.myListener.on(EVENT_ADD_ROOM, () => {
+      this.getRoomList();
+    });
+
+    msgListener.push(listen, listen2);
   },
 
   methods: {
@@ -158,35 +166,27 @@ export default {
     /**
      * @description 新建房间
      */
-    async newRoom() {
-      this.$refs["roomModal"].validate(valid => {
+    newRoom() {
+      this.$refs["roomModal"].validate( async valid => {
         if (!valid) {
           return;
         }
-        this.roomModal.roomNo = Number(this.roomModal.roomNo);
+        const roomModal = {...this.roomModal};
+        roomModal.roomNo = Number(roomModal.roomNo);
         const isEdit = this.roomModal.id;
-        this.axios({
+        await this.axios({
           url: isEdit ? "/room/update" : "/room/create",
           method: isEdit ? "put" : "post",
-          data: this.roomModal
-        }).then(
-          res => {
-            this.dialogVisible = false;
-            this.getRoomList();
-            this.$message({
-              showClose: true,
-              message: (isEdit ? "编辑" : "新建") + "成功",
-              type: "success"
-            });
-          },
-          err => {
-            this.$message({
-              showClose: true,
-              message: (isEdit ? "编辑" : "新建") + "失败，请重试",
-              type: "error"
-            });
-          }
-        );
+          data: roomModal,
+          _errMsg: (isEdit ? "编辑" : "新建") + "失败，请重试"
+        })
+        this.dialogVisible = false;
+        this.getRoomList();
+        this.$message({
+        showClose: true,
+            message: (isEdit ? "编辑" : "新建") + "成功",
+            type: "success"
+        });
       });
     },
 

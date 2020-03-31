@@ -28,11 +28,11 @@ export default {
     }
   },
 
-  emit: function (event, ...arg) {
+  emit: function (event, ...args) {
     const maps = listenMap.get(event);
     if (maps) {
       maps.forEach((cb) => {
-        cb && cb(...arg);
+        cb && cb(...args);
       });
     }
   },
